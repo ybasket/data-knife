@@ -21,6 +21,7 @@ object Main
     Opts.subcommands(
       SubcommandBuilder.fromConverter(JsonCborConverter),
       SubcommandBuilder.fromConverter(CborJsonConverter),
-      SubcommandBuilder.fromConverter(CsvJsonConverter)
+      SubcommandBuilder.fromConverter(CsvJsonConverter),
+      SubcommandBuilder.fromConverter(CsvCborConverter)
     )
 }
