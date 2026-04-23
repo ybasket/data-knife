@@ -10,7 +10,7 @@ import dataknife.io.{InputSource, OutputTarget}
 object SubcommandBuilder {
   def fromConverter[In <: Format, Out <: Format, C](conv: Converter[In, Out, C])(using io: Opts[conv.inputFormat.InputOptions], oo: Opts[conv.outputFormat.OutputOptions]): Opts[IO[ExitCode]] =
     Opts.subcommand(conv.commandName, conv.commandHelp) {
-      (CommonOpts.input, io, CommonOpts.output, oo, conv.configOpts).mapN { (input, inputOptions, output, outputOptions, config) =>
+      (InputSource.opts, io, OutputTarget.opts, oo, conv.configOpts).mapN { (input, inputOptions, output, outputOptions, config) =>
         InputSource
           .bytes(input)
           .through(conv.convertByteToByte(config, inputOptions, outputOptions))

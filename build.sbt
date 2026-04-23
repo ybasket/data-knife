@@ -6,8 +6,10 @@ val fs2DataVersion = "1.13.0"
 val declineVersion = "2.6.1"
 val http4sVersion  = "0.23.33"
 
-lazy val root = (project in file("."))
-  .enablePlugins(ScalaNativePlugin)
+lazy val root = crossProject(JVMPlatform, NativePlatform)
+  .crossType(CrossType.Full)
+  .withoutSuffixFor(JVMPlatform)
+  .in(file("."))
   .settings(
     name := "data-knife",
     libraryDependencies ++= Seq(
@@ -16,6 +18,13 @@ lazy val root = (project in file("."))
       "org.gnieh"    %%% "fs2-data-cbor-json"  % fs2DataVersion,
       "co.fs2"       %%% "fs2-io"              % "3.13.0",
       "com.monovore" %%% "decline-effect"      % declineVersion,
-      //"org.http4s"   %%% "http4s-ember-client" % http4sVersion,
     ),
   )
+  .jvmSettings(
+    libraryDependencies ++= Seq(
+      "org.http4s" %% "http4s-ember-client" % http4sVersion,
+    ),
+  )
+
+lazy val rootJVM    = root.jvm
+lazy val rootNative = root.native

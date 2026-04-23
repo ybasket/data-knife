@@ -1,9 +1,9 @@
 package dataknife.format
 
 import cats.effect.IO
-import fs2.{Pipe, Stream}
-import fs2.data.text.utf8._
 import fs2.data.json.jq.{Compiler, JqParser}
+import fs2.data.text.utf8.*
+import fs2.{Pipe, Stream}
 
 sealed trait Format(val name: String) {
   type Data

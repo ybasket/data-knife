@@ -11,7 +11,7 @@ object Main extends CommandIOApp(
   header = "Swiss-army knife for data format conversion",
   version = "0.1.0",
 ) {
-  
+
   given Opts[Unit] = Opts.unit
 
   override def main: Opts[IO[ExitCode]] =
