@@ -4,7 +4,7 @@ import cats.data.{NonEmptyList, Validated}
 import com.monovore.decline.{Argument, Opts}
 import dataknife.io.{InputSource, OutputTarget}
 import fs2.io.file.Path
-import org.http4s.Uri
+// import org.http4s.Uri
 
 object CommonOpts {
   given Argument[Path] = Argument.from("path") { string =>
@@ -18,7 +18,7 @@ object CommonOpts {
       .option[Path]("input", "Input file path", "i")
       .map(p => InputSource.FilePath(p))
 
-  private val urlInput: Opts[InputSource] =
+  /*private val urlInput: Opts[InputSource] =
     Opts
       .option[String]("url", "Input URL", "u")
       .mapValidated(s =>
@@ -28,10 +28,10 @@ object CommonOpts {
             e => Validated.invalidNel(s"Invalid URL: ${e.message}"),
             uri => Validated.validNel(InputSource.Url(uri)),
           )
-      )
+      )*/
 
   val input: Opts[InputSource] =
-    fileInput.orElse(urlInput).withDefault(InputSource.StdIn)
+    fileInput/*.orElse(urlInput)*/.withDefault(InputSource.StdIn)
 
   val output: Opts[OutputTarget] =
     Opts
