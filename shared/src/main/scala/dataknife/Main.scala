@@ -18,9 +18,9 @@ object Main
   given Opts[Unit] = Opts.unit
 
   override def main: Opts[IO[ExitCode]] =
-    (
+    Opts.subcommands(
       SubcommandBuilder.fromConverter(JsonCborConverter),
       SubcommandBuilder.fromConverter(CborJsonConverter),
       SubcommandBuilder.fromConverter(CsvJsonConverter)
-    ).reduce
+    )
 }
