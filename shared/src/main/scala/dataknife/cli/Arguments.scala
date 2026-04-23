@@ -4,7 +4,7 @@ import cats.data.{NonEmptyList, Validated}
 import com.monovore.decline.Argument
 import fs2.io.file.Path
 
-object CommonOpts {
+object Arguments {
   given Argument[Path] = Argument.from("path") { string =>
     Validated
       .catchNonFatal(Path(string))

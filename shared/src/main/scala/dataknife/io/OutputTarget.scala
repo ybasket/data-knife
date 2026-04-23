@@ -11,7 +11,7 @@ enum OutputTarget {
 }
 
 object OutputTarget {
-  import dataknife.cli.CommonOpts.given
+  import dataknife.cli.Arguments.given
 
   given opts: Opts[OutputTarget] =
     Opts

@@ -4,7 +4,7 @@ import com.monovore.decline.Opts
 import fs2.io.file.Path
 
 trait InputSources {
-  import dataknife.cli.CommonOpts.given
+  import dataknife.cli.Arguments.given
 
   protected val fileInput: Opts[InputSource] =
     Opts
