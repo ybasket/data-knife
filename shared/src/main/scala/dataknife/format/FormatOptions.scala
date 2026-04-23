@@ -12,6 +12,16 @@ object JsonInputOptions {
       .map(JsonInputOptions(_))
 }
 
+case class CborOutputOptions(diagnostic: Boolean = false)
+
+object CborOutputOptions {
+  given Opts[CborOutputOptions] =
+    Opts
+      .flag("diagnostic", "Output CBOR diagnostic notation instead of binary", "d")
+      .orFalse
+      .map(CborOutputOptions(_))
+}
+
 case class JsonOutputOptions(prettyPrint: Boolean = false)
 
 object JsonOutputOptions {

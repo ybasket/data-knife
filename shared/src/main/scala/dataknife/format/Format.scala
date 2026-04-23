@@ -41,8 +41,10 @@ object Format {
   case object Cbor extends Format("cbor") {
     override type Data = fs2.data.cbor.low.CborItem
     override type InputOptions = Unit
-    override type OutputOptions = Unit
+    override type OutputOptions = CborOutputOptions
     def read(opts: InputOptions): Pipe[IO, Byte, Data] = fs2.data.cbor.low.items[IO]
-    def write(opts: OutputOptions): Pipe[IO, Data, Byte] = fs2.data.cbor.low.toBinary
+    def write(opts: OutputOptions): Pipe[IO, Data, Byte] =
+      if (opts.diagnostic) _.through(fs2.data.cbor.Diagnostic(_)).through(fs2.text.utf8.encode)
+      else fs2.data.cbor.low.toBinary
   }
 }
