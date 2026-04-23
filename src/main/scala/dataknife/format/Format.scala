@@ -1,8 +1,9 @@
 package dataknife.format
 
 import cats.effect.IO
-import fs2.Pipe
+import fs2.{Pipe, Stream}
 import fs2.data.text.utf8._
+import fs2.data.json.jq.{Compiler, JqParser}
 
 sealed trait Format(val name: String) {
   type Data
@@ -15,10 +16,19 @@ sealed trait Format(val name: String) {
 object Format {
   case object Json extends Format("json") {
     override type Data = fs2.data.json.Token
-    override type InputOptions = Unit
+    override type InputOptions = JsonInputOptions
     override type OutputOptions = JsonOutputOptions
 
-    def read(opts: InputOptions): Pipe[IO, Byte, Data] = fs2.data.json.tokens[IO, Byte]
+    def read(opts: InputOptions): Pipe[IO, Byte, Data] = { stream =>
+      val tokens = stream.through(fs2.data.json.tokens[IO, Byte])
+      opts.jqQuery match {
+        case None => tokens
+        case Some(query) =>
+          Stream.eval(JqParser.parse[IO](query))
+            .evalMap(Compiler[IO].compile(_))
+            .flatMap { jqPipe => tokens.through(jqPipe) }
+      }
+    }
     def write(opts: OutputOptions): Pipe[IO, Data, Byte] = {
       val renderPipe: Pipe[IO, Data, String] =
         if (opts.prettyPrint) fs2.data.json.render.prettyPrint[IO]()
