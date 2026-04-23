@@ -1,7 +1,7 @@
 # data-knife
 
 A streaming CLI tool for converting between data formats (JSON, CBOR, CSV), built with Scala 3, fs2, and fs2-data. Runs
-on both JVM and Scala Native.
+on both JVM and Scala Native from a single shared source set.
 
 While this tool may be useful for some, it is primarily intended as a demonstration of fs2-data's streaming parsing and
 formatting capabilities. It is not optimized for maximum performance (though it should do okay while using only constant
@@ -37,7 +37,7 @@ Use `--input`/`-i` and `--output`/`-o` for file paths:
 data-knife cbor2json -i data.cbor -o data.json
 ```
 
-On JVM, `--url`/`-u` fetches input from an HTTP URL:
+Use `--url`/`-u` to fetch input from an HTTP URL:
 
 ```bash
 data-knife json2cbor --url https://example.com/data.json -o data.cbor
@@ -65,7 +65,7 @@ data-knife csv2json --csv-separator ';' < data.csv
 data-knife csv2cbor -i data.csv --diagnostic
 ```
 
-## Server Mode (JVM only)
+## Server Mode
 
 The `server` subcommand starts an HTTP server that exposes all conversions as `POST /<input>/<output>` routes.
 
@@ -105,14 +105,15 @@ Requires **sbt** and **Scala 3**.
 ### JVM
 
 ```bash
-sbt jvm/run -- csv2json -i data.csv
+sbt "run csv2json -i data.csv"
 ```
 
 ### Scala Native
 
-Requires [Scala Native prerequisites](https://scala-native.org/en/stable/user/setup.html) (LLVM/Clang).
+Requires [Scala Native prerequisites](https://scala-native.org/en/stable/user/setup.html) (LLVM/Clang) plus the
+[s2n-tls](https://github.com/aws/s2n-tls) library, used by http4s-ember for HTTPS (`brew install s2n` on macOS).
 
 ```bash
-sbt native/nativeLink
-./native/target/scala-3.8.3/native/dataknife.Main csv2json -i data.csv
+sbt rootNative/nativeLink
+./.native/target/scala-3.8.3/native/dataknife.Main csv2json -i data.csv
 ```

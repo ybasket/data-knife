@@ -5,12 +5,13 @@ ThisBuild / version := "0.1.0-SNAPSHOT"
 ThisBuild / scalaVersion := "3.8.3"
 
 val fs2DataVersion = "1.13.0"
-val http4sVersion = "0.23.33"
+val http4sVersion = "0.23.34"
 
 lazy val root = crossProject(JVMPlatform, NativePlatform)
-  .crossType(CrossType.Full)
+  .crossType(CrossType.Pure)
   .withoutSuffixFor(JVMPlatform)
   .in(file("."))
+  .jvmConfigure(_.in(file(".")))
   .settings(
     name := "data-knife",
     libraryDependencies ++= Seq(
@@ -19,16 +20,12 @@ lazy val root = crossProject(JVMPlatform, NativePlatform)
       "org.gnieh" %%% "fs2-data-cbor-json" % fs2DataVersion,
       "org.gnieh" %%% "fs2-data-csv" % fs2DataVersion,
       "co.fs2" %%% "fs2-io" % "3.13.0",
-      "com.monovore" %%% "decline-effect" % "2.6.1"
+      "com.monovore" %%% "decline-effect" % "2.6.1",
+      "org.http4s" %%% "http4s-ember-client" % http4sVersion,
+      "org.http4s" %%% "http4s-ember-server" % http4sVersion,
+      "org.http4s" %%% "http4s-dsl" % http4sVersion
     ),
     Compile / run / fork := true
-  )
-  .jvmSettings(
-    libraryDependencies ++= Seq(
-      "org.http4s" %% "http4s-ember-client" % http4sVersion,
-      "org.http4s" %% "http4s-ember-server" % http4sVersion,
-      "org.http4s" %% "http4s-dsl" % http4sVersion
-    )
   )
 
 lazy val rootJVM = root.jvm

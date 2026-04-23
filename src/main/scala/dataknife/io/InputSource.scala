@@ -1,6 +1,6 @@
 package dataknife.io
 
-import cats.data.{NonEmptyList, Validated}
+import cats.data.Validated
 import cats.effect.IO
 import com.monovore.decline.Opts
 import fs2.Stream
@@ -14,7 +14,13 @@ enum InputSource {
   case StdIn
 }
 
-object InputSource extends InputSources {
+object InputSource {
+  import dataknife.cli.Arguments.given
+
+  private val fileInput: Opts[InputSource] =
+    Opts
+      .option[Path]("input", "Input file path", "i")
+      .map(p => InputSource.FilePath(p))
 
   private val urlInput: Opts[InputSource] =
     Opts
