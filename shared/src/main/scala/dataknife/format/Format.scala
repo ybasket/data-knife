@@ -22,9 +22,10 @@ object Format {
     def read(opts: InputOptions): Pipe[IO, Byte, Data] = { stream =>
       val tokens = stream.through(fs2.data.json.tokens[IO, Byte])
       opts.jqQuery match {
-        case None => tokens
+        case None        => tokens
         case Some(query) =>
-          Stream.eval(JqParser.parse[IO](query))
+          Stream
+            .eval(JqParser.parse[IO](query))
             .evalMap(Compiler[IO].compile(_))
             .flatMap { jqPipe => tokens.through(jqPipe) }
       }
@@ -36,7 +37,7 @@ object Format {
       renderPipe andThen fs2.text.utf8.encode
     }
   }
-  
+
   case object Cbor extends Format("cbor") {
     override type Data = fs2.data.cbor.low.CborItem
     override type InputOptions = Unit

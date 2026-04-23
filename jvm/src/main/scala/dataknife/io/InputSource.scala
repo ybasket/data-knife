@@ -24,7 +24,7 @@ object InputSource extends InputSources {
           .fromString(s)
           .fold(
             e => Validated.invalidNel(s"Invalid URL: ${e.message}"),
-            uri => Validated.validNel(InputSource.Url(uri)),
+            uri => Validated.validNel(InputSource.Url(uri))
           )
       )
 
@@ -34,7 +34,7 @@ object InputSource extends InputSources {
   def bytes(source: InputSource): Stream[IO, Byte] = source match {
     case FilePath(path) => Files[IO].readAll(path)
     case StdIn          => fs2.io.stdin[IO](4096)
-    case Url(uri) =>
+    case Url(uri)       =>
       Stream
         .resource(EmberClientBuilder.default[IO].build)
         .flatMap(client => client.stream(Request[IO](uri = uri)).flatMap(_.body))
