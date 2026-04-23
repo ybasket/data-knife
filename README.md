@@ -65,6 +65,39 @@ data-knife csv2json --csv-separator ';' < data.csv
 data-knife csv2cbor -i data.csv --diagnostic
 ```
 
+## Server Mode (JVM only)
+
+The `server` subcommand starts an HTTP server that exposes all conversions as `POST /<input>/<output>` routes.
+
+```bash
+data-knife server [--host 0.0.0.0] [--port 9474]
+```
+
+The request body is the input data, and the response body is the converted output. Format options are passed as query parameters:
+
+| Parameter     | Description                                 |
+|---------------|---------------------------------------------|
+| `separator`   | CSV field separator (default: `,`)          |
+| `jq`          | jq filter to apply to JSON input            |
+| `pretty`      | Set to `true` to pretty-print JSON output   |
+| `diagnostic`  | Set to `true` for CBOR diagnostic notation  |
+
+### Examples
+
+```bash
+# Start the server
+data-knife server
+
+# Convert JSON to CBOR diagnostic notation
+curl -X POST --data-binary @data.json 'http://localhost:9474/json/cbor?diagnostic=true'
+
+# Convert CSV to pretty-printed JSON
+curl -X POST --data-binary @data.csv 'http://localhost:9474/csv/json?pretty=true'
+
+# Convert CSV with custom separator to CBOR
+curl -X POST --data-binary @data.csv 'http://localhost:9474/csv/cbor?separator=;'
+```
+
 ## Building and Running
 
 Requires **sbt** and **Scala 3**.
