@@ -12,6 +12,16 @@ object JsonInputOptions {
       .map(JsonInputOptions(_))
 }
 
+case class CsvInputOptions(separator: Char = ',')
+
+object CsvInputOptions {
+  given Opts[CsvInputOptions] =
+    Opts
+      .option[Char]("csv-separator", "CSV separator character (default: ',')")
+      .withDefault(',')
+      .map(CsvInputOptions(_))
+}
+
 case class CborOutputOptions(diagnostic: Boolean = false)
 
 object CborOutputOptions {

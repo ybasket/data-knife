@@ -1,6 +1,7 @@
 package dataknife.format
 
 import cats.effect.IO
+import fs2.data.csv.CsvRow
 import fs2.data.json.jq.{Compiler, JqParser}
 import fs2.data.text.utf8.*
 import fs2.{Pipe, Stream}
@@ -36,6 +37,16 @@ object Format {
         else fs2.data.json.render.compact[IO]
       renderPipe andThen fs2.text.utf8.encode
     }
+  }
+
+  case object Csv extends Format("csv") {
+    override type Data = fs2.data.csv.CsvRow[String]
+    override type InputOptions = CsvInputOptions
+    override type OutputOptions = Unit
+    def read(opts: InputOptions): Pipe[IO, Byte, Data] =
+      _.through(fs2.data.csv.decodeUsingHeaders[CsvRow[String]](separator = opts.separator))
+    def write(opts: OutputOptions): Pipe[IO, Data, Byte] =
+      _ => Stream.raiseError(new NotImplementedError("CSV writing not implemented yet"))
   }
 
   case object Cbor extends Format("cbor") {

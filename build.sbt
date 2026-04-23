@@ -18,6 +18,7 @@ lazy val root = crossProject(JVMPlatform, NativePlatform)
       "org.gnieh" %%% "fs2-data-json" % fs2DataVersion,
       "org.gnieh" %%% "fs2-data-cbor" % fs2DataVersion,
       "org.gnieh" %%% "fs2-data-cbor-json" % fs2DataVersion,
+      "org.gnieh" %%% "fs2-data-csv" % fs2DataVersion,
       "co.fs2" %%% "fs2-io" % "3.13.0",
       "com.monovore" %%% "decline-effect" % declineVersion
     )
